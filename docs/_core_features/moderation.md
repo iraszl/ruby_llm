@@ -30,6 +30,21 @@ After reading this guide, you will know:
 *   How to integrate moderation into your application workflows.
 *   Best practices for content safety and user experience.
 
+
+## Why Use Moderation
+
+Content moderation serves as a crucial safety layer in applications that handle user-generated content. Here's why you should implement moderation before sending content to LLM providers:
+
+**Enforce Terms of Service**: Automatically screen user submissions against harmful or offensive content categories, ensuring your application maintains community standards and complies with your terms of service without manual review of every message.
+
+**Protect Provider Relationships**: Maintain good standing with LLM providers by pre-screening content before API calls. Submitting policy-violating content can result in API key suspension or account termination, disrupting your entire application.
+
+**Enable Proactive Monitoring**: Log and track potentially problematic user activity for review. This creates an audit trail for both automatic filtering and manual moderation workflows, helping you identify patterns and improve your content policies.
+
+**Reduce Unnecessary Costs**: Save money by avoiding LLM API calls that would be rejected anyway. Since moderation requests are typically free or very low cost compared to chat completions, screening content first prevents expensive calls for content that won't generate useful responses.
+
+By implementing moderation, you build a more robust, cost-effective, and compliant application that protects both your users and your business relationships.
+
 ## Basic Content Moderation
 
 The simplest way to moderate content is using the global `RubyLLM.moderate` method:
@@ -136,8 +151,6 @@ end
 
 Refer to the [Available Models Reference]({% link _reference/available-models.md %}) for details on moderation models and their capabilities.
 
-## Integration Patterns
-
 ### Pre-Chat Moderation
 
 Use moderation as a safety layer before sending user input to LLMs:
@@ -146,7 +159,7 @@ Use moderation as a safety layer before sending user input to LLMs:
 def safe_chat_response(user_input)
   # Check content safety first
   moderation = RubyLLM.moderate(user_input)
-  
+
   if moderation.flagged?
     flagged_categories = moderation.flagged_categories.join(', ')
     return {
@@ -154,7 +167,7 @@ def safe_chat_response(user_input)
       safe: false
     }
   end
-  
+
   # Content is safe, proceed with chat
   response = RubyLLM.chat.ask(user_input)
   {
@@ -191,11 +204,11 @@ You might want to implement custom logic based on category scores:
 def assess_content_risk(text)
   result = RubyLLM.moderate(text)
   scores = result.category_scores
-  
+
   # Custom thresholds for different risk levels
   high_risk = scores.any? { |_, score| score > 0.8 }
   medium_risk = scores.any? { |_, score| score > 0.5 }
-  
+
   case
   when high_risk
     { risk: :high, action: :block, message: "Content blocked" }
@@ -219,7 +232,7 @@ Handle moderation errors gracefully:
 ```ruby
 begin
   result = RubyLLM.moderate("User content")
-  
+
   if result.flagged?
     handle_unsafe_content(result)
   else
@@ -247,7 +260,7 @@ Content moderation currently requires an OpenAI API key:
 ```ruby
 RubyLLM.configure do |config|
   config.openai_api_key = ENV['OPENAI_API_KEY']
-  
+
   # Optional: set default moderation model
   config.default_moderation_model = "omni-moderation-latest"
 end
@@ -277,9 +290,9 @@ end
 ```ruby
 def user_friendly_moderation(content)
   result = RubyLLM.moderate(content)
-  
+
   return { approved: true } unless result.flagged?
-  
+
   # Provide specific, actionable feedback
   categories = result.flagged_categories
   message = case
@@ -292,8 +305,8 @@ def user_friendly_moderation(content)
   else
     "This content doesn't meet our community guidelines."
   end
-  
-  { 
+
+  {
     approved: false,
     message: message,
     categories: categories
@@ -310,11 +323,11 @@ When using moderation in Rails applications:
 class MessageController < ApplicationController
   def create
     content = params[:message]
-    
+
     moderation_result = RubyLLM.moderate(content)
-    
+
     if moderation_result.flagged?
-      render json: { 
+      render json: {
         error: "Message not allowed",
         categories: moderation_result.flagged_categories
       }, status: :unprocessable_entity
@@ -330,7 +343,7 @@ end
 class ModerationJob < ApplicationJob
   def perform(message_ids)
     messages = Message.where(id: message_ids)
-    
+
     messages.each do |message|
       result = RubyLLM.moderate(message.content)
       message.update!(

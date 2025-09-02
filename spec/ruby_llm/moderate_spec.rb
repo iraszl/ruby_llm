@@ -12,7 +12,7 @@ RSpec.describe RubyLLM::Moderate do
       it 'moderates content and returns a Moderate instance' do
         result = RubyLLM.moderate(test_input)
 
-        expect(result).to be_a(RubyLLM::Moderate)
+        expect(result).to be_a(described_class)
         expect(result.id).to be_present
         expect(result.model).to be_present
         expect(result.results).to be_an(Array)
@@ -29,16 +29,16 @@ RSpec.describe RubyLLM::Moderate do
       end
 
       it 'can be called directly on the Moderate class' do
-        result = RubyLLM::Moderate.ask(test_input)
+        result = described_class.ask(test_input)
 
-        expect(result).to be_a(RubyLLM::Moderate)
+        expect(result).to be_a(described_class)
         expect(result.results).to be_present
       end
 
       it 'supports explicit model specification' do
         result = RubyLLM.moderate(test_input, provider: 'openai', assume_model_exists: true)
 
-        expect(result).to be_a(RubyLLM::Moderate)
+        expect(result).to be_a(described_class)
         expect(result.model).to be_present
       end
     end
