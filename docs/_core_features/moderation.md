@@ -151,6 +151,8 @@ end
 
 Refer to the [Available Models Reference]({% link _reference/available-models.md %}) for details on moderation models and their capabilities.
 
+## Integration Patters
+
 ### Pre-Chat Moderation
 
 Use moderation as a safety layer before sending user input to LLMs:
@@ -265,6 +267,8 @@ RubyLLM.configure do |config|
   config.default_moderation_model = "omni-moderation-latest"
 end
 ```
+
+For more details about OpenAI's moderation capabilities and policies, see the [OpenAI Moderation Guide](https://platform.openai.com/docs/guides/moderation).
 
 > Moderation API calls are typically less expensive than chat completions and have generous rate limits, making them suitable for screening all user inputs.
 {: .note }
