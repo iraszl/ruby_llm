@@ -30,21 +30,6 @@ After reading this guide, you will know:
 *   How to integrate moderation into your application workflows.
 *   Best practices for content safety and user experience.
 
-
-## Why Use Moderation
-
-Content moderation serves as a crucial safety layer in applications that handle user-generated content. Here's why you should implement moderation before sending content to LLM providers:
-
-**Enforce Terms of Service**: Automatically screen user submissions against harmful or offensive content categories, ensuring your application maintains community standards and complies with your terms of service without manual review of every message.
-
-**Protect Provider Relationships**: Maintain good standing with LLM providers by pre-screening content before API calls. Submitting policy-violating content can result in API key suspension or account termination, disrupting your entire application.
-
-**Enable Proactive Monitoring**: Log and track potentially problematic user activity for review. This creates an audit trail for both automatic filtering and manual moderation workflows, helping you identify patterns and improve your content policies.
-
-**Reduce Unnecessary Costs**: Save money by avoiding LLM API calls that would be rejected anyway. Since moderation requests are typically free or very low cost compared to chat completions, screening content first prevents expensive calls for content that won't generate useful responses.
-
-By implementing moderation, you build a more robust, cost-effective, and compliant application that protects both your users and your business relationships.
-
 ## Basic Content Moderation
 
 The simplest way to moderate content is using the global `RubyLLM.moderate` method:
@@ -179,25 +164,6 @@ def safe_chat_response(user_input)
 end
 ```
 
-### Batch Moderation
-
-For efficiency, you can moderate multiple messages:
-
-```ruby
-messages = [
-  "Hello, how are you?",
-  "Tell me about Ruby programming",
-  "What's the weather like?"
-]
-
-results = messages.map { |msg| RubyLLM.moderate(msg) }
-safe_messages = messages.zip(results)
-  .select { |msg, result| !result.flagged? }
-  .map(&:first)
-
-puts "#{safe_messages.length} out of #{messages.length} messages are safe"
-```
-
 ### Custom Threshold Handling
 
 You might want to implement custom logic based on category scores:
@@ -284,7 +250,6 @@ For more details about OpenAI's moderation capabilities and policies, see the [O
 
 ### Performance Considerations
 
-- **Batch moderate multiple inputs** when possible for efficiency
 - **Cache moderation results** for repeated content (with appropriate TTL)
 - **Use background jobs** for non-blocking moderation of large volumes
 - **Implement fallbacks** for when moderation services are unavailable

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RubyLLM
-  # Identify potentially harmful content in text and images.
+  # Identify potentially harmful content in text.
   # https://platform.openai.com/docs/guides/moderation
   class Moderation
     attr_reader :id, :model, :results
