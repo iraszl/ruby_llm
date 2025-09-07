@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe RubyLLM::Moderate do
+RSpec.describe RubyLLM::Moderation do
   include_context 'with configured RubyLLM'
 
   let(:test_input) { 'This is a safe message' }
 
-  describe '.ask' do
+  describe '.moderate' do
     context 'with OpenAI provider' do
-      it 'moderates content and returns a Moderate instance' do
+      it 'moderates content and returns a Moderation instance' do
         result = RubyLLM.moderate(test_input)
 
         expect(result).to be_a(described_class)
@@ -28,8 +28,8 @@ RSpec.describe RubyLLM::Moderate do
         expect(result.categories).to be_a(Hash)
       end
 
-      it 'can be called directly on the Moderate class' do
-        result = described_class.ask(test_input)
+      it 'can be called directly on the Moderation class' do
+        result = described_class.moderate(test_input)
 
         expect(result).to be_a(described_class)
         expect(result.results).to be_present

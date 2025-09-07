@@ -48,7 +48,7 @@ module RubyLLM
     end
 
     def moderate(...)
-      Moderate.ask(...)
+      Moderation.moderate(...)
     end
 
     def paint(...)

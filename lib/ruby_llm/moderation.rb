@@ -3,7 +3,7 @@
 module RubyLLM
   # Identify potentially harmful content in text and images.
   # https://platform.openai.com/docs/guides/moderation
-  class Moderate
+  class Moderation
     attr_reader :id, :model, :results
 
     def initialize(id:, model:, results:)
@@ -12,11 +12,11 @@ module RubyLLM
       @results = results
     end
 
-    def self.ask(input,
-                 model: nil,
-                 provider: nil,
-                 assume_model_exists: false,
-                 context: nil)
+    def self.moderate(input,
+                      model: nil,
+                      provider: nil,
+                      assume_model_exists: false,
+                      context: nil)
       config = context&.config || RubyLLM.config
       model ||= config.default_moderation_model || 'omni-moderation-latest'
       model, provider_instance = Models.resolve(model, provider: provider, assume_exists: assume_model_exists,

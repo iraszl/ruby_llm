@@ -65,7 +65,7 @@ puts "Moderation ID: #{result.id}"     # => "modr-ABC123..."
 puts "Model used: #{result.model}"     # => "omni-moderation-latest"
 ```
 
-The `moderate` method returns a `RubyLLM::Moderate` object containing the moderation results from the provider.
+The `moderate` method returns a `RubyLLM::Moderation` object containing the moderation results from the provider.
 
 ## Understanding Moderation Results
 
@@ -115,7 +115,7 @@ You can also use the class method directly:
 
 ```ruby
 # Direct class method
-result = RubyLLM::Moderate.ask("Your content here")
+result = RubyLLM::Moderation.moderate("Your content here")
 
 # With explicit model specification
 result = RubyLLM.moderate(

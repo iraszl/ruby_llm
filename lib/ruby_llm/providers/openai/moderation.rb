@@ -22,7 +22,7 @@ module RubyLLM
           data = response.body
           raise Error.new(response, data.dig('error', 'message')) if data.dig('error', 'message')
 
-          Moderate.new(
+          RubyLLM::Moderation.new(
             id: data['id'],
             model: model,
             results: data['results'] || []
